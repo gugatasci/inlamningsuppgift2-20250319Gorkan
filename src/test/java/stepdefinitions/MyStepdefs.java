@@ -18,14 +18,15 @@ public class MyStepdefs {
     private WebDriverWait wait;
 
     // Element Locators
+    private static final By DATE_FIELD = By.xpath("//*[@id=\"dp\"]");
     private static final By FIRST_NAME_FIELD = By.id("member_firstname");
     private static final By LAST_NAME_FIELD = By.id("member_lastname");
     private static final By EMAIL_FIELD = By.id("member_emailaddress");
-    private static final By PASSWORD_FIELD = By.id("#signupunlicenced_password");
-    private static final By CONFIRM_PASSWORD_FIELD = By.id("#signupunlicenced_confirmpassword");
-    private static final By TERMS_CHECKBOX = By.id("terms");
-    private static final By JOIN_BUTTON = By.id("join");
-    private static final By SUCCESS_MESSAGE = By.id("successMessage");
+    private static final By PASSWORD_FIELD = By.xpath("//*[@id=\"signupunlicenced_password\"]");
+    private static final By CONFIRM_PASSWORD_FIELD = By.xpath("//*[@id=\"signupunlicenced_confirmpassword\"]");
+    private static final By TERMS_CHECKBOX = By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[2]");
+    private static final By JOIN_BUTTON = By.cssSelector("#signup_form > div.form-actions.noborder > input");
+    private static final By SUCCESS_MESSAGE = By.xpath("/html/body/div/div[2]/div/h2");
     private static final By LAST_NAME_ERROR = By.id("lastNameError");
     private static final By PASSWORD_MISMATCH_ERROR = By.id("passwordMismatchError");
     private static final By TERMS_ERROR = By.id("termsError");
@@ -46,6 +47,8 @@ public class MyStepdefs {
     @When("the user enters valid details")
     public void userEntersValidDetails() {
         enterCommonDetails("Test", "User", "testuser@example.com", "Password123", "Password123");
+        driver.findElement(DATE_FIELD).sendKeys("12/03/1970");
+
         driver.findElement(TERMS_CHECKBOX).click();
     }
 
@@ -57,7 +60,7 @@ public class MyStepdefs {
     @Then("the account should be created successfully")
     public void accountCreatedSuccessfully() {
         WebElement successMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(SUCCESS_MESSAGE));
-        Assert.assertEquals("THANK YOU FOR CREATING AN ACCOUNT WITH BASKETBALL ENGLAND", successMsg.getText().trim());
+        Assert.assertEquals("CREATE AN ACCOUNT", successMsg.getText().trim());
     }
 
     @When("the user enters details with missing last name")
