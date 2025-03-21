@@ -12,6 +12,11 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
+//io.cucumber.java.Before och @After – Hanterar uppstart och nedstängning av WebDriver.
+//io.cucumber.java.en.* – Importerar stöd för Gherkin-notation (@Given, @When, @Then).
+//Selenium-importer (org.openqa.selenium.*) – Används för att styra webbläsaren.
+//JUnit (org.junit.Assert) – Används för att göra asserteringar (bekräftelser av testresultat).
+//WebDriverManager – Används för att hantera ChromeDriver-versionen automatiskt
 
 public class MyStepdefs {
     private WebDriver driver;
@@ -33,6 +38,10 @@ public class MyStepdefs {
     private static final By PASSWORD_MISMATCH_ERROR = By.xpath("//*[@id=\"signup_form\"]/div[8]/div/div[2]/div[2]/div/span/span");
     private static final By TERMS_ERROR = By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[2]/div[1]/span/span");
 
+    //Innan varje test:
+    //Sätter upp ChromeDriver för Selenium.
+    //Skapar en instans av WebDriver och WebDriverWait.
+    //Maximerar webbläsarfönstret.
     @Before
     public void setUp() {
         WebDriverManager.chromedriver().setup();
@@ -40,7 +49,7 @@ public class MyStepdefs {
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.manage().window().maximize();
     }
-
+//Öppnar registreringssidan.
     @Given("the user is on the registration page")
     public void userIsOnRegistrationPage() {
         driver.get("https://membership.basketballengland.co.uk/NewSupporterAccount");
@@ -55,12 +64,12 @@ public class MyStepdefs {
         driver.findElement(AGE_CHECKBOX).click();
         driver.findElement(ETHICS_CHECKBOX).click();
     }
-
+    //Väntar på att registreringsknappen blir klickbar och klickar på den.
     @When("the user submits the form")
     public void userSubmitsForm() {
         wait.until(ExpectedConditions.elementToBeClickable(JOIN_BUTTON)).click();
     }
-
+//Väntar på att framgångsmeddelandet visas och kontrollerar att texten matchar förväntat resultat
     @Then("the account should be created successfully")
     public void accountCreatedSuccessfully() {
         WebElement successMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(SUCCESS_MESSAGE));
@@ -120,7 +129,8 @@ public class MyStepdefs {
         WebElement errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(TERMS_ERROR));
         Assert.assertTrue(errorMsg.isDisplayed());
     }
-
+ //Efter varje test:
+ //Avslutar WebDriver för att stänga webbläsaren.
     @After
     public void tearDown() {
         try {
@@ -131,7 +141,7 @@ public class MyStepdefs {
             System.out.println("Exception during driver quit: " + e.getMessage());
         }
     }
-
+//En hjälpmetod för att minska kodupprepning
     private void enterCommonDetails(String firstName, String lastName, String email, String password, String confirmPassword) {
         driver.findElement(FIRST_NAME_FIELD).clear();
         driver.findElement(FIRST_NAME_FIELD).sendKeys(firstName);
@@ -150,3 +160,6 @@ public class MyStepdefs {
         driver.findElement(CONFIRM_PASSWORD_FIELD).sendKeys(confirmPassword);
     }
 }
+//Sammanfattning
+//Denna Cucumber Step Definition-klass definierar tester för att automatisera registrering på en webbplats.
+// Den hanterar lyckad registrering samt olika felhanteringsfall som saknade fält och ogiltiga inmatningar.
