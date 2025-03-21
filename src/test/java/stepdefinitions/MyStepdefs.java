@@ -25,11 +25,13 @@ public class MyStepdefs {
     private static final By PASSWORD_FIELD = By.xpath("//*[@id=\"signupunlicenced_password\"]");
     private static final By CONFIRM_PASSWORD_FIELD = By.xpath("//*[@id=\"signupunlicenced_confirmpassword\"]");
     private static final By TERMS_CHECKBOX = By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[2]");
+    private static final By AGE_CHECKBOX = By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[2]/div[2]/label");
+    private static final By ETHICS_CHECKBOX = By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[7]/label");
     private static final By JOIN_BUTTON = By.cssSelector("#signup_form > div.form-actions.noborder > input");
     private static final By SUCCESS_MESSAGE = By.xpath("/html/body/div/div[2]/div/h2");
-    private static final By LAST_NAME_ERROR = By.id("lastNameError");
-    private static final By PASSWORD_MISMATCH_ERROR = By.id("passwordMismatchError");
-    private static final By TERMS_ERROR = By.id("termsError");
+    private static final By LAST_NAME_ERROR = By.xpath("//*[contains(text(), 'Last Name is required')]");
+    private static final By PASSWORD_MISMATCH_ERROR = By.xpath("//*[@id=\"signup_form\"]/div[8]/div/div[2]/div[2]/div/span/span");
+    private static final By TERMS_ERROR = By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[2]/div[1]/span/span");
 
     @Before
     public void setUp() {
@@ -50,6 +52,8 @@ public class MyStepdefs {
         driver.findElement(DATE_FIELD).sendKeys("12/03/1970");
 
         driver.findElement(TERMS_CHECKBOX).click();
+        driver.findElement(AGE_CHECKBOX).click();
+        driver.findElement(ETHICS_CHECKBOX).click();
     }
 
     @When("the user submits the form")
@@ -66,19 +70,33 @@ public class MyStepdefs {
     @When("the user enters details with missing last name")
     public void userEntersMissingLastName() {
         enterCommonDetails("Test", "", "testuser@example.com", "Password123", "Password123");
+        //driver.findElement(TERMS_CHECKBOX).click();
+        driver.findElement(DATE_FIELD).sendKeys("12/03/1970");
+
         driver.findElement(TERMS_CHECKBOX).click();
+        driver.findElement(AGE_CHECKBOX).click();
+        driver.findElement(ETHICS_CHECKBOX).click();
     }
 
     @Then("an error message for missing last name should be displayed")
     public void errorMessageForMissingLastName() {
         WebElement errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(LAST_NAME_ERROR));
+
         Assert.assertTrue(errorMsg.isDisplayed());
+
     }
 
     @When("the user enters details with mismatching passwords")
     public void userEntersMismatchingPasswords() {
         enterCommonDetails("Test", "User", "testuser@example.com", "Password123", "DifferentPassword");
+        //driver.findElement(TERMS_CHECKBOX).click();
+        driver.findElement(DATE_FIELD).sendKeys("12/03/1970");
+
         driver.findElement(TERMS_CHECKBOX).click();
+        driver.findElement(AGE_CHECKBOX).click();
+        driver.findElement(ETHICS_CHECKBOX).click();
+
+
     }
 
     @Then("an error message for password mismatch should be displayed")
@@ -90,6 +108,11 @@ public class MyStepdefs {
     @When("the user enters details but does not accept terms and conditions")
     public void userDoesNotAcceptTerms() {
         enterCommonDetails("Test", "User", "testuser@example.com", "Password123", "Password123");
+        driver.findElement(DATE_FIELD).sendKeys("12/03/1970");
+
+        //driver.findElement(TERMS_CHECKBOX).click();
+        driver.findElement(AGE_CHECKBOX).click();
+        driver.findElement(ETHICS_CHECKBOX).click();
     }
 
     @Then("an error message for not accepting terms and conditions should be displayed")
