@@ -89,7 +89,7 @@ public class MyStepdefs {
     @When("the user enters details with mismatching passwords")
     public void userEntersMismatchingPasswords() {
         enterCommonDetails("Test", "User", "testuser@example.com", "Password123", "DifferentPassword");
-        //driver.findElement(TERMS_CHECKBOX).click();
+
         driver.findElement(DATE_FIELD).sendKeys("12/03/1970");
 
         driver.findElement(TERMS_CHECKBOX).click();
