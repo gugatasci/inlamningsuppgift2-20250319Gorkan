@@ -3,6 +3,7 @@ package stepdefinitions;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -12,15 +13,29 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
-public class MyStepdefs{
-    WebDriver driver;
-    WebDriverWait wait;
+public class MyStepdefs {
+    private WebDriver driver;
+    private WebDriverWait wait;
+
+    // Element Locators
+    private static final By FIRST_NAME_FIELD = By.id("member_firstname");
+    private static final By LAST_NAME_FIELD = By.id("member_lastname");
+    private static final By EMAIL_FIELD = By.id("member_emailaddress");
+    private static final By PASSWORD_FIELD = By.id("#signupunlicenced_password");
+    private static final By CONFIRM_PASSWORD_FIELD = By.id("#signupunlicenced_confirmpassword");
+    private static final By TERMS_CHECKBOX = By.id("terms");
+    private static final By JOIN_BUTTON = By.id("join");
+    private static final By SUCCESS_MESSAGE = By.id("successMessage");
+    private static final By LAST_NAME_ERROR = By.id("lastNameError");
+    private static final By PASSWORD_MISMATCH_ERROR = By.id("passwordMismatchError");
+    private static final By TERMS_ERROR = By.id("termsError");
 
     @Before
     public void setUp() {
-
+        WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        driver.manage().window().maximize();
     }
 
     @Given("the user is on the registration page")
@@ -31,41 +46,41 @@ public class MyStepdefs{
     @When("the user enters valid details")
     public void userEntersValidDetails() {
         enterCommonDetails("Test", "User", "testuser@example.com", "Password123", "Password123");
-        driver.findElement(By.id("terms")).click();
+        driver.findElement(TERMS_CHECKBOX).click();
     }
 
     @When("the user submits the form")
     public void userSubmitsForm() {
-        driver.findElement(By.id("submit")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(JOIN_BUTTON)).click();
     }
 
     @Then("the account should be created successfully")
     public void accountCreatedSuccessfully() {
-        WebElement successMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("successMessage")));
-        Assert.assertTrue(successMsg.isDisplayed());
+        WebElement successMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(SUCCESS_MESSAGE));
+        Assert.assertEquals("THANK YOU FOR CREATING AN ACCOUNT WITH BASKETBALL ENGLAND", successMsg.getText().trim());
     }
 
     @When("the user enters details with missing last name")
     public void userEntersMissingLastName() {
         enterCommonDetails("Test", "", "testuser@example.com", "Password123", "Password123");
-        driver.findElement(By.id("terms")).click();
+        driver.findElement(TERMS_CHECKBOX).click();
     }
 
     @Then("an error message for missing last name should be displayed")
     public void errorMessageForMissingLastName() {
-        WebElement errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("lastNameError")));
+        WebElement errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(LAST_NAME_ERROR));
         Assert.assertTrue(errorMsg.isDisplayed());
     }
 
     @When("the user enters details with mismatching passwords")
     public void userEntersMismatchingPasswords() {
         enterCommonDetails("Test", "User", "testuser@example.com", "Password123", "DifferentPassword");
-        driver.findElement(By.id("terms")).click();
+        driver.findElement(TERMS_CHECKBOX).click();
     }
 
     @Then("an error message for password mismatch should be displayed")
     public void errorMessageForPasswordMismatch() {
-        WebElement errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("passwordMismatchError")));
+        WebElement errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(PASSWORD_MISMATCH_ERROR));
         Assert.assertTrue(errorMsg.isDisplayed());
     }
 
@@ -76,24 +91,36 @@ public class MyStepdefs{
 
     @Then("an error message for not accepting terms and conditions should be displayed")
     public void errorMessageForNotAcceptingTerms() {
-        WebElement errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("termsError")));
+        WebElement errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(TERMS_ERROR));
         Assert.assertTrue(errorMsg.isDisplayed());
     }
 
     @After
     public void tearDown() {
-        if (driver != null) {
-            driver.quit();
+        try {
+            if (driver != null) {
+                driver.quit();
+            }
+        } catch (Exception e) {
+            System.out.println("Exception during driver quit: " + e.getMessage());
         }
     }
 
     private void enterCommonDetails(String firstName, String lastName, String email, String password, String confirmPassword) {
-        driver.findElement(By.id("firstName")).sendKeys(firstName);
+        driver.findElement(FIRST_NAME_FIELD).clear();
+        driver.findElement(FIRST_NAME_FIELD).sendKeys(firstName);
+
         if (!lastName.isEmpty()) {
-            driver.findElement(By.id("lastName")).sendKeys(lastName);
+            WebElement lastNameField = driver.findElement(LAST_NAME_FIELD);
+            lastNameField.clear();
+            lastNameField.sendKeys(lastName);
         }
-        driver.findElement(By.id("email")).sendKeys(email);
-        driver.findElement(By.id("password")).sendKeys(password);
-        driver.findElement(By.id("confirmPassword")).sendKeys(confirmPassword);
+
+        driver.findElement(EMAIL_FIELD).clear();
+        driver.findElement(EMAIL_FIELD).sendKeys(email);
+        driver.findElement(PASSWORD_FIELD).clear();
+        driver.findElement(PASSWORD_FIELD).sendKeys(password);
+        driver.findElement(CONFIRM_PASSWORD_FIELD).clear();
+        driver.findElement(CONFIRM_PASSWORD_FIELD).sendKeys(confirmPassword);
     }
 }
