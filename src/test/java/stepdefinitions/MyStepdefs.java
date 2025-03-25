@@ -27,9 +27,12 @@ public class MyStepdefs {
     private static final By FIRST_NAME_FIELD = By.id("member_firstname");
     private static final By LAST_NAME_FIELD = By.id("member_lastname");
     private static final By EMAIL_FIELD = By.id("member_emailaddress");
+    private static final By CONFIRM_EMAIL_FIELD = By.id("member_confirmemailaddress");
+
     private static final By PASSWORD_FIELD = By.xpath("//*[@id=\"signupunlicenced_password\"]");
     private static final By CONFIRM_PASSWORD_FIELD = By.xpath("//*[@id=\"signupunlicenced_confirmpassword\"]");
-    private static final By TERMS_CHECKBOX = By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[2]");
+
+    private static final By TERMS_CHECKBOX = By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[2]/div[1]/label");
     private static final By AGE_CHECKBOX = By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[2]/div[2]/label");
     private static final By ETHICS_CHECKBOX = By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[7]/label");
     private static final By JOIN_BUTTON = By.cssSelector("#signup_form > div.form-actions.noborder > input");
@@ -49,7 +52,7 @@ public class MyStepdefs {
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.manage().window().maximize();
     }
-//Öppnar registreringssidan.
+    //Öppnar registreringssidan.
     @Given("the user is on the registration page")
     public void userIsOnRegistrationPage() {
         driver.get("https://membership.basketballengland.co.uk/NewSupporterAccount");
@@ -69,7 +72,7 @@ public class MyStepdefs {
     public void userSubmitsForm() {
         wait.until(ExpectedConditions.elementToBeClickable(JOIN_BUTTON)).click();
     }
-//Väntar på att framgångsmeddelandet visas och kontrollerar att texten matchar förväntat resultat
+    //Väntar på att framgångsmeddelandet visas och kontrollerar att texten matchar förväntat resultat
     @Then("the account should be created successfully")
     public void accountCreatedSuccessfully() {
         WebElement successMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(SUCCESS_MESSAGE));
@@ -129,19 +132,19 @@ public class MyStepdefs {
         WebElement errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(TERMS_ERROR));
         Assert.assertTrue(errorMsg.isDisplayed());
     }
- //Efter varje test:
- //Avslutar WebDriver för att stänga webbläsaren.
+    //Efter varje test:
+    //Avslutar WebDriver för att stänga webbläsaren.
     @After
     public void tearDown() {
         try {
             if (driver != null) {
-                driver.quit();
+                //driver.quit();
             }
         } catch (Exception e) {
             System.out.println("Exception during driver quit: " + e.getMessage());
         }
     }
-//En hjälpmetod för att minska kodupprepning
+    //En hjälpmetod för att minska kodupprepning
     private void enterCommonDetails(String firstName, String lastName, String email, String password, String confirmPassword) {
         driver.findElement(FIRST_NAME_FIELD).clear();
         driver.findElement(FIRST_NAME_FIELD).sendKeys(firstName);
@@ -154,6 +157,8 @@ public class MyStepdefs {
 
         driver.findElement(EMAIL_FIELD).clear();
         driver.findElement(EMAIL_FIELD).sendKeys(email);
+        driver.findElement(CONFIRM_EMAIL_FIELD).clear();
+        driver.findElement(CONFIRM_EMAIL_FIELD).sendKeys(email);
         driver.findElement(PASSWORD_FIELD).clear();
         driver.findElement(PASSWORD_FIELD).sendKeys(password);
         driver.findElement(CONFIRM_PASSWORD_FIELD).clear();
