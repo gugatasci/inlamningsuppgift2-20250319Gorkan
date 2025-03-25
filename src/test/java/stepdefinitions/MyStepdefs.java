@@ -6,6 +6,7 @@ import io.cucumber.java.en.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -35,12 +36,13 @@ public class MyStepdefs {
     private static final By TERMS_CHECKBOX = By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[2]/div[1]/label");
     private static final By AGE_CHECKBOX = By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[2]/div[2]/label");
     private static final By ETHICS_CHECKBOX = By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[7]/label");
-    private static final By JOIN_BUTTON = By.cssSelector("#signup_form > div.form-actions.noborder > input");
+
     private static final By SUCCESS_MESSAGE = By.xpath("/html/body/div/div[2]/div/h2");
     private static final By LAST_NAME_ERROR = By.xpath("//*[contains(text(), 'Last Name is required')]");
     private static final By PASSWORD_MISMATCH_ERROR = By.xpath("//*[@id=\"signup_form\"]/div[8]/div/div[2]/div[2]/div/span/span");
     private static final By TERMS_ERROR = By.xpath("//*[@id=\"signup_form\"]/div[11]/div/div[2]/div[1]/span/span");
 
+    private static final By JOIN_BUTTON = By.className("btn-big");
     //Innan varje test:
     //Sätter upp ChromeDriver för Selenium.
     //Skapar en instans av WebDriver och WebDriverWait.
@@ -70,7 +72,10 @@ public class MyStepdefs {
     //Väntar på att registreringsknappen blir klickbar och klickar på den.
     @When("the user submits the form")
     public void userSubmitsForm() {
-        wait.until(ExpectedConditions.elementToBeClickable(JOIN_BUTTON)).click();
+        //wait.until(ExpectedConditions.elementToBeClickable(JOIN_BUTTON)).click();
+        WebElement joinButton = driver.findElement(JOIN_BUTTON);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", joinButton);
+
     }
     //Väntar på att framgångsmeddelandet visas och kontrollerar att texten matchar förväntat resultat
     @Then("the account should be created successfully")
