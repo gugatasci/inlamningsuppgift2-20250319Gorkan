@@ -72,9 +72,10 @@ public class MyStepdefs {
     //Väntar på att registreringsknappen blir klickbar och klickar på den.
     @When("the user submits the form")
     public void userSubmitsForm() {
-        //wait.until(ExpectedConditions.elementToBeClickable(JOIN_BUTTON)).click();
-        WebElement joinButton = driver.findElement(JOIN_BUTTON);
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", joinButton);
+        wait.until(ExpectedConditions.elementToBeClickable(JOIN_BUTTON)).click();
+        //WebElement joinButton = driver.findElement(JOIN_BUTTON);
+        //((JavascriptExecutor) driver).executeScript("arguments[0].click();", joinButton);
+        //driver.findElement(JOIN_BUTTON).click();
 
     }
     //Väntar på att framgångsmeddelandet visas och kontrollerar att texten matchar förväntat resultat
