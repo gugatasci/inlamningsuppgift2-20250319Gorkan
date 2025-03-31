@@ -13,6 +13,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 //io.cucumber.java.Before och @After – Hanterar uppstart och nedstängning av WebDriver.
 //io.cucumber.java.en.* – Importerar stöd för Gherkin-notation (@Given, @When, @Then).
 //Selenium-importer (org.openqa.selenium.*) – Används för att styra webbläsaren.
@@ -22,6 +24,7 @@ import java.time.Duration;
 public class MyStepdefs {
     private WebDriver driver;
     private WebDriverWait wait;
+    private String uniqueEmail;
 
     // Element Locators
     private static final By DATE_FIELD = By.xpath("//*[@id=\"dp\"]");
@@ -54,7 +57,13 @@ public class MyStepdefs {
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.manage().window().maximize();
+        uniqueEmail = generateUniqueEmail();
+
     }
+    private String generateUniqueEmail() {
+        String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        return "testuser" + timestamp + "@example.com";}
+
     //Öppnar registreringssidan.
     @Given("the user is on the registration page")
     public void userIsOnRegistrationPage() {
@@ -63,7 +72,7 @@ public class MyStepdefs {
 //ändra email innan du kör!!!
     @When("the user enters valid details")
     public void userEntersValidDetails() {
-        enterCommonDetails("Test", "User", "test1234445user@example.com", "Password123", "Password123");
+        enterCommonDetails("Test", "User", uniqueEmail, "Password123", "Password123");
         driver.findElement(DATE_FIELD).sendKeys("12/03/1970");
 
         driver.findElement(TERMS_CHECKBOX).click();
