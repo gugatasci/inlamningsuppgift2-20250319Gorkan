@@ -47,6 +47,7 @@ public class MyStepdefs {
     //Sätter upp ChromeDriver för Selenium.
     //Skapar en instans av WebDriver och WebDriverWait.
     //Maximerar webbläsarfönstret.
+    //String epost = "tomastestgubbe+" + System.currentTimeMillis() + "@gmail.com";String epost2 = UUID.randomUUID()+"@mailnesia.com";
     @Before
     public void setUp() {
         WebDriverManager.chromedriver().setup();
@@ -62,7 +63,7 @@ public class MyStepdefs {
 //ändra email innan du kör!!!
     @When("the user enters valid details")
     public void userEntersValidDetails() {
-        enterCommonDetails("Test", "User", "test2222user@example.com", "Password123", "Password123");
+        enterCommonDetails("Test", "User", "test1234445user@example.com", "Password123", "Password123");
         driver.findElement(DATE_FIELD).sendKeys("12/03/1970");
 
         driver.findElement(TERMS_CHECKBOX).click();
@@ -147,7 +148,7 @@ public class MyStepdefs {
     public void tearDown() {
         try {
             if (driver != null) {
-                //driver.quit();
+                driver.quit();
             }
         } catch (Exception e) {
             System.out.println("Exception during driver quit: " + e.getMessage());
@@ -163,6 +164,7 @@ public class MyStepdefs {
             lastNameField.clear();
             lastNameField.sendKeys(lastName);
         }
+
 
         driver.findElement(EMAIL_FIELD).clear();
         driver.findElement(EMAIL_FIELD).sendKeys(email);
