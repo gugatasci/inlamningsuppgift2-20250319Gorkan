@@ -1,4 +1,4 @@
-Feature: User Registration on Basketball England website
+Feature: User Registration on Basketball England websitee
 
   Scenario: Successful user registration
     Given the user is on the registration page

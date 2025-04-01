@@ -185,6 +185,6 @@ public class MyStepdefs {
         driver.findElement(CONFIRM_PASSWORD_FIELD).sendKeys(confirmPassword);
     }
 }
-//Sammanfattning
+//Sammanfatning
 //Denna Cucumber Step Definition-klass definierar tester för att automatisera registrering på en webbplats.
 // Den hanterar lyckad registrering samt olika felhanteringsfall som saknade fält och ogiltiga inmatningar.
